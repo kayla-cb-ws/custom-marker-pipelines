@@ -83,33 +83,33 @@ spec:
                 }
             }
         }
-        stage('Build and Push Image') {
+        stage('when: master') {
             agent any
             when {
                 beforeAgent true
                 branch 'master'
             }
-            steps {
-                echo "TODO - build and push image"
-                unstash 'app'
-            }
-        }
-        stage('Deploy') {
-            when {
-                beforeAgent true
-                branch 'master'
-            }
-            options {
-                timeout(time: 30, unit: 'SECONDS')
-            }
-            input {
-                message "Should we deploy?"
+            stages {
+                stage('Build and Push Image') {
+                    steps {
+                        echo "TODO - build and push image"
+                        unstash 'app'
+                    }
+                }
+                stage('Deploy') {
+                    options {
+                        timeout(time: 30, unit: 'SECONDS')
+                    }
+                    input {
+                        message "Should we deploy?"
 //                submitter "rizzorc"
-                submitterParameter "APPROVER"
-            }
-            steps {
-                echo "Continuing with deployment - approved by ${APPROVER}"
+                        submitterParameter "APPROVER"
+                    }
+                    steps {
+                        echo "Continuing with deployment - approved by ${APPROVER}"
 //                sh 'java -version'
+                    }
+                }
             }
         }
     }
