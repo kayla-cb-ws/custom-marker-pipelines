@@ -22,10 +22,12 @@ pipeline {
                 timeout(time: 30, unit: 'SECONDS')
             }
             input {
-                message "Should we continue?"
+                message "Should we deploy?"
+                submitter "rizzorc"
+                submitterParameter "APPROVER"
             }
             steps {
-                echo "TODO - build and push image"
+                echo "Continuing with deployment - approved by ${APPROVER}"
 //                sh 'java -version'
             }
         }
