@@ -1,5 +1,4 @@
 //The global script scope
-//noinspection GroovyAssignabilityCheck
 def ctx = context(scope: scriptScope())
 contributor(ctx) {
     method(name: 'build', type: 'Object', params: [job:'java.lang.String'], doc: 'Build a job')
