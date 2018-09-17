@@ -38,6 +38,9 @@ spec:
                 success {
                     stash name: 'app', includes: '*.js, public/**, views/*, Dockerfile'
                 }
+                always {
+                    junit 'res.xml'
+                }
             }
             steps {
                 checkout scm
