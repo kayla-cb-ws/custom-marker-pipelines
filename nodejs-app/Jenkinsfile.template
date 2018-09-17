@@ -22,7 +22,7 @@ metadata:
 spec:
   containers:
   - name: nodejs
-    image: node:10.10.0-alpine
+    image: node:10.9.0-alpine
     command:
     - cat
     tty: true
@@ -31,7 +31,35 @@ spec:
     command:
     - cat
     tty: true
-                    """
+          """
+                }
+            }
+            stages {
+                stage('Node Setup') {
+                    steps {
+                        checkout scm
+                        container('nodejs') {
+                            sh '''
+                npm install express
+                npm install pug --save
+                node ./hello.js &
+              '''
+                        }
+                    }
+                }
+                stage('Chrome') {
+                    steps {
+                        container('testcafe') {
+                            sh '/opt/testcafe/docker/testcafe-docker.sh "chromium --no-sandbox" tests/*.js -r xunit:res.xml'
+                        }
+                    }
+                }
+                stage('Firefox') {
+                    steps {
+                        container('testcafe') {
+                            sh '/opt/testcafe/docker/testcafe-docker.sh firefox tests/*.js -r xunit:res.xml'
+                        }
+                    }
                 }
             }
             post {
@@ -40,19 +68,6 @@ spec:
                 }
                 always {
                     junit 'res.xml'
-                }
-            }
-            steps {
-                checkout scm
-                container('nodejs') {
-                    sh '''
-            npm install express
-            npm install pug --save
-            node ./hello.js &
-          '''
-                }
-                container('testcafe') {
-                    sh '/opt/testcafe/docker/testcafe-docker.sh "chromium --no-sandbox,firefox" tests/*.js -r xunit:res.xml'
                 }
             }
         }
