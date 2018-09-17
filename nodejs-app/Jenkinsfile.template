@@ -12,12 +12,28 @@ pipeline {
     stages {
         stage('Test') {
             agent { label 'nodejs-app' }
+            post {
+                success {
+                    stash name: 'app', includes: '*.js, public/**, views/*, Dockerfile'
+                }
+            }
             steps {
                 checkout scm
                 container('nodejs') {
                     echo 'Hello World!'
                     sh 'node --version'
                 }
+            }
+        }
+        stage('Build and Push Image') {
+            agent any
+            when {
+                beforeAgent true
+                branch 'master'
+            }
+            steps {
+                echo "TODO - build and push image"
+                unstash 'app'
             }
         }
         stage('Deploy') {
